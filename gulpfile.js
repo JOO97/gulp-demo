@@ -1,21 +1,42 @@
-const { series } = require('gulp')
+const { series, src, dest, task } = require('gulp')
+const babel = require('gulp-babel')
+const uglify = require('gulp-uglify')
+const sourceMap = require('gulp-sourcemaps')
+const concat = require('gulp-concat')
+const clean = require('gulp-clean')
+const rename = require('gulp-rename')
+const webpack = require('webpack-stream')
 
-// The `clean` function is not exported so it can be considered a private task.
-// It can still be used within the `series()` composition.
-function clean(cb) {
-  // body omitted
-  cb()
-}
+//clean task
+task('clean', () => {
+  return src('build/*', { allowEmpty: true, read: false }).pipe(clean())
+})
+// exports.build = task('clean')
 
-// The `build` function is exported so it is public and can be run with the `gulp` command.
-// It can also be used within the `series()` composition.
-function build(cb) {
-  // body omitted
-  cb()
-}
-
-exports.build = build
-exports.default = series(clean, build)
-
-交互类.按钮组
-by: zjm
+exports.default = series(task('clean'), () => {
+  return (
+    src('src/**/*.js')
+      .pipe(sourceMap.init())
+      .pipe(
+        babel({
+          presets: ['@babel/preset-env'],
+        })
+      )
+      .pipe(
+        webpack({
+          output: {
+            filename: 'build.js',
+          },
+        })
+      )
+      // .pipe(uglify())
+      .pipe(
+        rename(path => {
+          // console.log(path)
+          // path.dirname += '/ciao'
+          // path.basename += '-xxx'
+        })
+      )
+      .pipe(dest('build'))
+  )
+})
