@@ -9,8 +9,9 @@ const webpack = require('webpack-stream')
 
 //clean task
 task('clean', () => {
-  return src('build/*', { allowEmpty: true, read: false }).pipe(clean())
+  return src('build/*', { allowEmpty: false, read: false }).pipe(clean())
 })
+exports.clean = task('clean')
 // exports.build = task('clean')
 
 const task1 = cb => {

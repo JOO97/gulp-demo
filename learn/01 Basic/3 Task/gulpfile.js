@@ -7,12 +7,19 @@ const { task, series } = require('gulp')
 const task1 = cb => {
   cb()
 }
+//exports.[任务名称]
+exports.task = task1
 
 //方法二
-task('task2', cb => {
+const task2 = cb => {
+  cb()
+}
+task(task2)
+
+//方法三
+task('task3', cb => {
   cb()
 })
-exports.task2 = task('task2')
 
 //组合任务
-exports.default = series(task1, task('task2'))
+exports.default = series(task1, task('task3'))
