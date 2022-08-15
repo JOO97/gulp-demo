@@ -1,4 +1,6 @@
-# Gulp
+
+
+Gulp
 
 ## 1 Intro
 
@@ -16,9 +18,15 @@ event
 
 https://www.lmlphp.com/user/16675/article/item/575940/
 
-## 2 Usage
+### 1.3 
 
-### 2.1 SetUp
+
+
+## 2 Basic
+
+### 2.1 Quick Start
+
+**SetUp**
 
 ````shell
 npm install --global gulp-cli
@@ -30,40 +38,33 @@ npm install --save-dev gulp
 
 ![image-20220805111024477](C:\Users\LEGION\AppData\Roaming\Typora\typora-user-images\image-20220805111024477.png)
 
-### 2.2 Create a gulpfile
-
-1. 创建`gulpfile.js`
-
-2. 创建默认任务
+**Create a gulpfile**
 
 ````javascript
+//在gulpfile.js中创建一个默认任务
 exports.default = cb => {
   cb()
 }
 ````
 
-3. run task
+**Run Task**
 
 ````sh
-gulp 
+gulp
 ````
 
-4. 
+**Result**
 
+![01](C:/Users/LEGION/Desktop/TEMP/gulp/01.png)
 
-
-## 3 Basic
-
-### 3.1 CLI
+### 2.2 CLI
 
 命令 `gulp [flags] <task> <task> ...`
 
 说明
 
 1. `gulp` 执行当前目录下gulpfile.js中的默认任务
-
 2. `gulp 任务名称` 执行指定任务, 若要执行多个任务，任务间以空格分割
-
 3. flags
 
    - `-f`  指定gulpfile目录
@@ -74,7 +75,95 @@ gulp
 
    - [文档参考](https://github.com/gulpjs/gulp-cli/blob/master/docs/CLI.md)
 
-### 3.2 Task
+
+
+### 2.3 Gulpfile
+
+gulpfile 是项目目录下名为 `gulpfile.js` （或者首字母大写 `Gulpfile.js`）的文件，在运行 `gulp` 命令时会被自动加载。所有导出的函数都将注册到 gulp 的任务（task）系统中。
+
+默认使用`commonjs`规范来编写gulpfile 文件。
+
+**gulpfile.esm.js**
+
+使用es module规范来编写gulpfile，需安装`esm`并把gulpfile命名为`c'`
+
+
+
+
+
+**Gulpfile 转译**
+
+可以使用需要转译的编程语言来书写 gulpfile 文件，例如 TypeScript 或 Babel
+
+- 对于 TypeScript，重命名为 `gulpfile.ts` 并安装 [ts-node](https://www.npmjs.com/package/ts-node) 模块
+
+https://github.com/kdcllc/ionic-typescript-seed/blob/master/gulpfile.ts
+
+ ````javascript
+ import tool from './utils/index'
+ 
+ const tsTask = (cb): void => {
+   console.log('run gulpfile.ts')
+   tool()
+   cb()
+ }
+ exports.default = tsTask
+ ````
+
+- 对于 Babel，重命名为 `gulpfile.babel.js` 并安装 [@babel/register](https://www.npmjs.com/package/@babel/register)   [@babel/preset-env](https://www.npmjs.com/package/@babel/preset-env) 模块
+
+https://github.com/olehreznichenko/gulpfile.babel.js/tree/master/gulp/tasks
+
+`gulpfile.babel.js`
+
+````javascript
+import { clean } from './utils/clean.js'
+
+const babelTask = cb => {
+  console.log('run gulpfile.babel.js')
+  cb()
+}
+
+export default babelTask
+export { clean }
+````
+
+`.babelrc.json`
+
+````json
+{
+  "presets": ["@babel/preset-env"]
+}
+````
+
+
+
+**Gulpfile 分割**
+
+大部分用户起初是将所有业务逻辑都写到一个 gulpfile 文件中。随着文件的变大，可以将此文件重构为数个独立的文件。
+
+每个任务（task）可以被分割为独立的文件，然后导入（import）到 gulpfile 文件中并组合。这不仅使事情变得井然有序，而且可以对每个任务（task）进行单独测试，或者根据条件改变组合。
+
+Node 的模块解析功能允许你将 `gulpfile.js`文件替换为同样命名为 `gulpfile.js` 的目录，该目录中包含了一个名为 `index.js` 的文件，该文件被当作 `gulpfile.js` 使用。且该目录中还可以包含各个独立的任务（task）模块。
+
+````
+├─gulpfile.js
+|      └index.js
+````
+
+
+
+
+
+
+
+
+
+
+
+## 3 Concepts
+
+### 3.1 Task
 
 **gulp中的任务**
 
@@ -94,13 +183,13 @@ const task1 = cb => {
 //exports.[任务名称]
 exports.task = task1
 
-//方法二
+//方法二 不推荐
 const task2 = cb => {
   cb()
 }
 task(task2)
 
-//方法三
+//方法三 不推荐
 task('task3', cb => {
   cb()
 })
@@ -132,50 +221,13 @@ task('task3', cb => {
 - 公开任务（Public tasks） 从 gulpfile 中被导出（export），可以通过 gulp 命令直接调用
 - 私有任务（Private tasks） 被设计为在内部使用，通常作为 series() 或 parallel() 组合的组成部分
 
-#### 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module
-
-1. commonjs
-2. es module： `gulpfile.esm.js`
-
-
-
-task
-
-1. 异步
-2. **public** or **private**
-3. 任务组合
-   - series() 顺序执行
-   - parallel() 最大程度的并发执行
-
-
-
-
-
-## 4 API
-
-### 4.1 Concepts
 
 http://acgtofe.com/posts/2015/09/dive-into-gulp-stream
 
-#### Vinyl File Object
+### 3.2 Vinyl File Object
 
 **Vinyl**可以看做一个文件描述器，通过它可以轻松构建单个文件的元数据（metadata object）描述对象
 
@@ -246,7 +298,7 @@ gulp.src("*.js", {buffer: false})
 
 
 
-#### Glob
+### 3.3 Glob
 
 glob 是由普通字符和/或通配字符组成的字符串，用于匹配文件路径。可以利用一个或多个 glob 在文件系统中定位文件
 
@@ -265,17 +317,31 @@ gulp.src('./js/**/{omui,common}.js')            // {} 匹配{}里的文件名
 
 
 
-### 4.2 src()
 
-`src(globs, [options])`
 
-**Parameters** [#](https://gulpjs.com/docs/en/api/src#parameters)
 
-`globs`
+
+
+
+
+
+
+
+## 4 API
+
+### 4.1 src()
+
+**定义**
+
+`src(globs, [options])` 
+
+**参数说明** [#](https://gulpjs.com/docs/en/api/src#parameters)
+
+1.`globs`
 
 类型：string array
 
-`options`
+2.`options`
 
 类型：object
 
@@ -285,7 +351,7 @@ gulp.src('./js/**/{omui,common}.js')            // {} 匹配{}里的文件名
 - read：当不需要读取匹配到的文件时，可将`read`设置为`true`
 - 其余参数请参考 https://gulpjs.com/docs/en/api/src#options
 
-**Usage**
+**示例**
 
 ````javascript
 const { src, dest } = require('gulp')
@@ -299,21 +365,21 @@ exports.copy = copy
 
 
 
-### dest()
+### 4.2 dest()
+
+**定义**
 
 `dest(directory, [options])`
 
-**Parameters** [#](https://gulpjs.com/docs/en/api/dest#parameters)
+**参数说明** [#](https://gulpjs.com/docs/en/api/dest#parameters)
 
-`directory`
+1.`directory`
 
 类型：string function
 
-说明: 
+说明：输出目录的路径
 
-
-
-`options`
+2.`options`
 
 类型：object
 
@@ -324,7 +390,7 @@ exports.copy = copy
 - sourcemaps
 - 其余参数请参考 https://www.gulpjs.com.cn/docs/api/dest/#%E9%80%89%E9%A1%B9
 
-### ？symlink()
+### 4.3 symlink()
 
 软链接
 
@@ -332,13 +398,116 @@ fs.symlink https://nodejs.org/api/fs.html#fssymlinktarget-path-type-callback
 
 https://baijiahao.baidu.com/s?id=1711929846570027467&wfr=spider&for=pc
 
-### task()
+### 4.4 task()
 
-### series()
+**提示**: 官方不再推荐使用该API
 
-### parallel()
+`task([taskName], taskFunction)`
 
-### watch()
+可用于注册、查询任务
+
+**参数说明** [#](https://www.gulpjs.com.cn/docs/api/task/#parameters)
+
+1.`taskName` 
+
+类型：string 
+
+说明: 任务名称。当taskFunction为匿名函数或任务的displayName为空时，需传入`taskName`，否则为非必填参数。
+
+2.`taskFunction`
+
+类型：function
+
+说明：任务函数。为一个任务函数或组合任务函数（由`series()`、`parallel()`包裹的）
+
+**任务元数据**
+
+|  property   |  type  | note                                                         |
+| :---------: | :----: | ------------------------------------------------------------ |
+|    name     | string | 函数名称。不可写                                             |
+| displayName | string | 任务别名。定义后会覆盖任务原有的名称                         |
+| description | string | 任务描述信息                                                 |
+|    flags    | object | When attached to a `taskFunction` provides flags to be printed by the command line when listing tasks. The keys of the object represent the flags and the values are their descriptions. |
+
+
+
+
+
+### 4.5 series()
+
+**定义**
+
+`series(...tasks)` 
+
+所有任务将按顺序运行。如果一个任务中发生错误，则不会运行后续任务
+
+
+
+**参数说明** [#](https://www.gulpjs.com.cn/docs/api/series/#%E5%8F%82%E6%95%B0)
+
+1.`tasks`
+
+类型：string function
+
+说明：任意数量的任务函数都可以作为单独的参数传递。如果您以前注册过任务，可以使用字符串，但不建议这样做
+
+
+
+
+
+### 4.6 parallel()
+
+**定义**
+
+`parallel(...tasks)` 
+
+所有任务将按最大并发性运行。如果一个任务发生错误，其他任务可能不确定地完成，也可能不完成。
+
+
+
+**参数说明** [#](https://www.gulpjs.com.cn/docs/api/series/#%E5%8F%82%E6%95%B0)
+
+1.`tasks`
+
+类型：string function
+
+说明：任意数量的任务函数都可以作为单独的参数传递。如果您以前注册过任务，可以使用字符串，但不建议这样做
+**避免重复任务**
+
+当运行组合操作时，每个任务将在每次提供时执行。
+
+在两个不同的组合中引用的 `clean` 任务将运行两次，将导致不期望的结果。因此，建议在最终组合中指定 `clean` 任务。
+
+错误示例
+
+```js
+const { series, parallel } = require('gulp')
+
+const clean = function(cb) {cb()}
+
+const css = series(clean, function(cb) {cb()})
+
+const javascript = series(clean, function(cb) {cb()})
+
+exports.build = parallel(css, javascript)
+```
+
+可转换为：
+
+```js
+const { series, parallel } = require('gulp')
+
+function clean(cb) {cb()}
+
+function css(cb) {cb()}
+
+function javascript(cb) {cb()}
+
+exports.build = series(clean, parallel(css, javascript))
+```
+
+
+### 4.7 watch()
 
 
 
@@ -352,9 +521,17 @@ https://baijiahao.baidu.com/s?id=1711929846570027467&wfr=spider&for=pc
 
 ## 5 Plugin
 
+https://gulpjs.com/plugins/
+
+
+
+### gulp-terser
+
 gulp-uglify
 
-babel
+
+
+### gulp-babel
 
 ```
 gulp-babel
@@ -372,9 +549,57 @@ webpack-stream
 
 gulp-debug
 
+
+
+
+
+### browser-sync
+
+`npm i browser-sync -D`
+
+https://www.dandelioncloud.cn/article/details/1451841139929321473
+
+**与gulp结合使用**
+
+````javascript
+const bs = browserSync.create()
+const serve = () => {
+  bs.init({
+    port: 8080,
+    open: true,
+    files: './dist/*',
+    server: {
+      baseDir: './dist',
+    },
+  })
+}
+````
+
+**代理模式**
+
+localhost:8081为本地vue项目的地址
+
+````sh
+browser-sync start --proxy "localhost:8081" "*"
+````
+
+
+
+### gulp.spritesmith
+
+
+
+
+
+
+
+
+
 ## 6 Demo
 
+### 6.1 
 
+### 6.2 gulp + webpack
 
 
 
@@ -402,7 +627,7 @@ https://www.jianshu.com/p/fcc97f0fa535
 
 
 
-## 补充知识
+## 补充
 
 ### Stream
 
