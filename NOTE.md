@@ -587,7 +587,7 @@ browser-sync start --proxy "localhost:8081" "*"
 
 
 
-
+### gulp-util [#](https://github.com/gulpjs/gulp-util)
 
 
 
@@ -603,9 +603,35 @@ browser-sync start --proxy "localhost:8081" "*"
 
 ## 7 源码
 
-orchestrator
+undertaker
+
+https://www.lmlphp.com/user/58030/article/item/1242907/
+
+````javascript
+var Undertaker = require('undertaker');
+
+function Gulp() {
+  Undertaker.call(this);
+
+  // Bind the functions for destructuring
+  this.watch = this.watch.bind(this);
+  this.task = this.task.bind(this);
+  this.series = this.series.bind(this);
+  this.parallel = this.parallel.bind(this);
+  this.registry = this.registry.bind(this);
+  this.tree = this.tree.bind(this);
+  this.lastRun = this.lastRun.bind(this);
+  this.src = this.src.bind(this);
+  this.dest = this.dest.bind(this);
+  this.symlink = this.symlink.bind(this);
+}
+````
+
+
 
 vinyl-fs
+
+
 
 
 
@@ -649,7 +675,15 @@ http://www.zhishichong.com/article/100343
 
 
 
-## 参考资料
+Project
+
+https://github.com/cognitom/symbols-for-sketch
+
+
+
+
+
+## 参考
 
 
 
@@ -658,5 +692,3 @@ http://www.zhishichong.com/article/100343
 Q
 
 1. task中的cb
-
-2. browser-sync http://acgtofe.com/posts/2015/03/more-fluent-with-browsersync

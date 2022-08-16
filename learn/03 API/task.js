@@ -15,7 +15,7 @@ function build(cb) {
   cb()
 }
 build.description = 'Build the project' //任务描述信息
-build.flags = { '-e': 'An example flag' }
+build.flags = { '--prod': 'Builds in production mode (minification, etc).' }
 
 task(build)
 

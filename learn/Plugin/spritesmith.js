@@ -16,12 +16,10 @@ gulp.task('sprite', function () {
   // Pipe image stream through image optimizer and onto disk
   var imgStream = spriteData.img
     .pipe(buffer())
-    .pipe(gulp.dest('output/sprite/image/folder/'))
+    .pipe(gulp.dest('output/sprite/'))
 
   // Pipe CSS stream through CSS optimizer and onto disk
-  var cssStream = spriteData.css
-    .pipe(csso())
-    .pipe(gulp.dest('output/sprite/css/folder/'))
+  var cssStream = spriteData.css.pipe(csso()).pipe(gulp.dest('output/sprite/'))
 
   // Return a merged stream to handle both `end` events
   return merge(imgStream, cssStream)
