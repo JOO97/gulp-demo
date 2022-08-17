@@ -3,13 +3,15 @@ const { src, dest, watch, series, parallel } = require('gulp')
 const htmlMin = require('gulp-htmlmin')
 const babel = require('gulp-babel')
 const terser = require('gulp-terser')
-// const uglify = require('gulp-uglify')
 const less = require('gulp-less') // less
 const postcss = require('gulp-postcss') // postcss
 const postcssPresetEnv = require('postcss-preset-env')
 const inject = require('gulp-inject')
 
+const sourceMap = require('gulp-sourcemaps')
+
 const browserSync = require('browser-sync')
+const webpack = require('webpack-stream')
 
 const del = require('del')
 
@@ -25,8 +27,17 @@ const htmlTask = () => {
 
 const jsTask = () => {
   return src('./src/js/**.js', { base: './src' })
+    .pipe(sourceMap.init())
     .pipe(babel({ presets: ['@babel/preset-env'] }))
+    .pipe(
+      webpack({
+        output: {
+          filename: './js/[name].js',
+        },
+      })
+    )
     .pipe(terser({ mangle: { toplevel: true } }))
+    .pipe(sourceMap.write('./'))
     .pipe(dest('./dist'))
 }
 
@@ -66,11 +77,13 @@ const clean = () => {
   return del(['dist'])
 }
 
+//构建任务
 const buildTask = series(
-  clean, //清除已有文件
+  clean, //清理目录
   parallel(htmlTask, jsTask, lessTask), //分别处理html、js、less文件
   injectHtml //将处理后的文件地址注入到html
 )
+//本地服务
 const serveTask = series(buildTask, serve)
 
 module.exports = {

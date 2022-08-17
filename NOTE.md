@@ -151,14 +151,6 @@ Node 的模块解析功能允许你将 `gulpfile.js`文件替换为同样命名�
 
 
 
-
-
-
-
-
-
-
-
 ## 3 Concepts
 
 ### 3.1 Task
@@ -519,33 +511,7 @@ exports.build = series(clean, parallel(css, javascript))
 
 ## 5 Plugin
 
-https://gulpjs.com/plugins/
-
-
-
-### gulp-terser
-
-gulp-uglify
-
-
-
-### gulp-babel
-
-```
-gulp-babel
-
-babel-preset-es2015
-
-```
-
-gulp-clean
-
-```
-webpack-stream
-
-```
-
-gulp-debug
+### https://gulpjs.com/plugins
 
 
 
@@ -583,21 +549,106 @@ browser-sync start --proxy "localhost:8081" "*"
 
 
 
-### gulp.spritesmith
-
-
-
-### gulp-util [#](https://github.com/gulpjs/gulp-util)
-
-
+### 
 
 
 
 ## 6 Demo
 
-### 6.1 
+````javascript
+const { src, dest, watch, series, parallel } = require('gulp')
 
-### 6.2 gulp + webpack
+const htmlMin = require('gulp-htmlmin')
+const babel = require('gulp-babel')
+const terser = require('gulp-terser')
+const less = require('gulp-less') // less
+const postcss = require('gulp-postcss') // postcss
+const postcssPresetEnv = require('postcss-preset-env')
+const inject = require('gulp-inject')
+
+const sourceMap = require('gulp-sourcemaps')
+
+const browserSync = require('browser-sync')
+const webpack = require('webpack-stream')
+
+const del = require('del')
+
+const htmlTask = () => {
+  return src('./src/*.html', { base: './src' })
+    .pipe(
+      htmlMin({
+        collapseWhitespace: true,
+      })
+    )
+    .pipe(dest('./dist'))
+}
+
+const jsTask = () => {
+  return src('./src/js/**.js', { base: './src' })
+    .pipe(sourceMap.init())
+    .pipe(babel({ presets: ['@babel/preset-env'] }))
+    .pipe(
+      webpack({
+        output: {
+          filename: './js/[name].js',
+        },
+      })
+    )
+    .pipe(terser({ mangle: { toplevel: true } }))
+    .pipe(sourceMap.write('./'))
+    .pipe(dest('./dist'))
+}
+
+const lessTask = () => {
+  return src('./src/css/*.less', { base: './src' })
+    .pipe(less())
+    .pipe(postcss([postcssPresetEnv()]))
+    .pipe(dest('./dist'))
+}
+
+const injectHtml = () => {
+  return src('./dist/*.html')
+    .pipe(
+      inject(src(['./dist/js/*.js', './dist/css/*.css']), { relative: true })
+    )
+    .pipe(dest('./dist'))
+}
+
+// 搭建本地服务器
+const bs = browserSync.create()
+const serve = () => {
+  watch('./src/*.html', series(htmlTask, injectHtml))
+  watch('./src/js/*.js', series(jsTask, injectHtml))
+  watch('./src/css/*.less', series(lessTask, injectHtml))
+
+  bs.init({
+    port: 8085,
+    open: true,
+    files: './dist/*',
+    server: {
+      baseDir: './dist',
+    },
+  })
+}
+
+const clean = () => {
+  return del(['dist'])
+}
+
+//构建任务
+const buildTask = series(
+  clean, //清理目录
+  parallel(htmlTask, jsTask, lessTask), //分别处理html、js、less文件
+  injectHtml //将处理后的文件地址注入到html
+)
+//本地服务
+const serveTask = series(buildTask, serve)
+
+module.exports = {
+  serveTask,
+  buildTask,
+}
+````
 
 
 
@@ -673,6 +724,8 @@ http://www.zhishichong.com/article/100343
 
 
 
+esbuild
+
 
 
 Project
@@ -683,12 +736,9 @@ https://github.com/cognitom/symbols-for-sketch
 
 
 
-## 参考
+## 相关链接
 
+- 官方文档 https://gulpjs.com/
+- 中文文档 https://www.gulpjs.com.cn/
+- Gulp4 工作流配置示例 https://github.com/zhonglimh/Ublue-gulp-config
 
-
-
-
-Q
-
-1. task中的cb

@@ -1,1 +1,0 @@
-"use strict";var o="main.js";console.log(o);var n=function(o,n){return o+n};console.log(n(20,30));
