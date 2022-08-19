@@ -1,10 +1,11 @@
-var gulp = require('gulp')
-var spritesmith = require('gulp.spritesmith')
-var buffer = require('vinyl-buffer')
-var csso = require('gulp-csso')
-var merge = require('merge-stream')
+const gulp = require('gulp')
+const spritesmith = require('gulp.spritesmith')
+const buffer = require('vinyl-buffer')
+const csso = require('gulp-csso')
+const merge = require('merge-stream')
+const inject = require('gulp-inject')
 
-gulp.task('sprite', function () {
+const sprite = () => {
   // Generate our spritesheet
   var spriteData = gulp.src('src/images/*.png').pipe(
     spritesmith({
@@ -23,4 +24,18 @@ gulp.task('sprite', function () {
 
   // Return a merged stream to handle both `end` events
   return merge(imgStream, cssStream)
+}
+
+exports.default = gulp.series(sprite, () => {
+  return gulp
+    .src('./src/html/*.html')
+    .pipe(
+      inject(gulp.src('./output/sprite/*.css'), {
+        relative: false,
+        ignorePath: 'output',
+        addPrefix: '.',
+        addRootSlash: false,
+      })
+    )
+    .pipe(gulp.dest('output/'))
 })

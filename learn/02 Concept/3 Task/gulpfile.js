@@ -7,6 +7,7 @@ const { task, series } = require('gulp')
 const task1 = cb => {
   cb()
 }
+
 //exports.[任务名称]
 exports.task = task1
 

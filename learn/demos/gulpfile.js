@@ -51,6 +51,7 @@ const lessTask = () => {
 const injectHtml = () => {
   return src('./dist/*.html')
     .pipe(
+      //html模板中必须有标记
       inject(src(['./dist/js/*.js', './dist/css/*.css']), { relative: true })
     )
     .pipe(dest('./dist'))
@@ -58,6 +59,7 @@ const injectHtml = () => {
 
 // 搭建本地服务器
 const bs = browserSync.create()
+
 const serve = () => {
   watch('./src/*.html', series(htmlTask, injectHtml))
   watch('./src/js/*.js', series(jsTask, injectHtml))

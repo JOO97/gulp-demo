@@ -13,7 +13,7 @@ task('copy', () => {
   //1.2
   // return src(['src/js/*.js', 'src/css/*.css']).pipe(dest('build/'))
   //1.3 allowEmpty
-  return src('src/empty1.js', { allowEmpty: true }).pipe(dest('build/'))
+  // return src('src/empty1.js', { allowEmpty: true }).pipe(dest('build/'))
 })
 
 task('clean', () => {

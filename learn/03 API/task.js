@@ -1,4 +1,5 @@
 const { task, series } = require('gulp')
+const argv = require('yargs').argv //yargs 处理命令行参数
 
 //clean
 const clean = function (cb) {
@@ -12,6 +13,8 @@ task(clean)
 //build
 function build(cb) {
   console.log('run build task')
+  console.log('argv', argv)
+  if (argv.prod) console.log('run build task in prod mode')
   cb()
 }
 build.description = 'Build the project' //任务描述信息

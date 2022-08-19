@@ -1,30 +1,38 @@
+> 2022/08/19 Created By 张嘉敏
+
+
+
 # Gulp
 
 ## 1 Intro
 
-### 1.1 前端工程化
+### 1.1 什么是Gulp
 
-https://gulpjs.com/
+> A toolkit to automate & enhance your workflow
 
-### 1.2 Node Stream
+> 是一个**前端自动化构建工具**。对于需要反复重复的任务，例如代码转换、代码检测、图片压缩等，在gulp中定义一系列的任务，就可以将这些过程自动化，以提高我们的工作流
 
-pipe
-
-pipeline
-
-event
-
-https://www.lmlphp.com/user/16675/article/item/575940/
-
-### 1.3 
+![image-20220818151854185](https://s2.loli.net/2022/08/18/xejBylfJczMKs8i.png)
 
 
 
-## 2 Basic
+**核心 task runner**
 
-### 2.1 Quick Start
+- 可以定义一系列的**任务**
+- 基于**文件Stream**的构建流
+- 对大量源文件可以进行流式处理，利用gulp的**插件**体系可以对文件类型进行多种操作处理
 
-**SetUp**
+**缺点**
+
+默认不支持模块化，更适合用于编写一些自动化的任务
+
+> **webpack**是一个模块化的打包工具，可以使用各种loader来加载不同的模块。
+
+
+
+### 1.2 基本使用
+
+**安装**
 
 ````shell
 npm install --global gulp-cli
@@ -34,9 +42,9 @@ npm install --global gulp-cli
 npm install --save-dev gulp
 ````
 
-![image-20220805111024477](C:\Users\LEGION\AppData\Roaming\Typora\typora-user-images\image-20220805111024477.png)
+![image-20220805111024477](https://s2.loli.net/2022/08/19/KkBCrPXmYEiLnF8.png)
 
-**Create a gulpfile**
+**创建gulpfile**
 
 ````javascript
 //在gulpfile.js中创建一个默认任务
@@ -45,17 +53,19 @@ exports.default = cb => {
 }
 ````
 
-**Run Task**
+**运行结果**
 
 ````sh
 gulp
 ````
 
-**Result**
+![01](https://s2.loli.net/2022/08/19/w1AmTWNuj63UHe5.png)
 
-![01](C:/Users/LEGION/Desktop/TEMP/gulp/01.png)
 
-### 2.2 CLI
+
+## 2 Basic
+
+### 2.1 CLI
 
 命令 `gulp [flags] <task> <task> ...`
 
@@ -75,19 +85,15 @@ gulp
 
 
 
-### 2.3 Gulpfile
+### 2.2 Gulpfile
 
 gulpfile 是项目目录下名为 `gulpfile.js` （或者首字母大写 `Gulpfile.js`）的文件，在运行 `gulp` 命令时会被自动加载。所有导出的函数都将注册到 gulp 的任务（task）系统中。
 
 默认使用`commonjs`规范来编写gulpfile 文件。
 
-**gulpfile.esm.js**
+**ES Moudle**
 
-使用es module规范来编写gulpfile，需安装`esm`并把gulpfile命名为`c'`
-
-
-
-
+使用es module规范来编写gulpfile，需安装`esm`并把gulpfile文件命名为`gulpfi.esm.js'`
 
 **Gulpfile 转译**
 
@@ -97,7 +103,7 @@ gulpfile 是项目目录下名为 `gulpfile.js` （或者首字母大写 `Gulpfi
 
 https://github.com/kdcllc/ionic-typescript-seed/blob/master/gulpfile.ts
 
- ````javascript
+````javascript
  import tool from './utils/index'
  
  const tsTask = (cb): void => {
@@ -106,7 +112,7 @@ https://github.com/kdcllc/ionic-typescript-seed/blob/master/gulpfile.ts
    cb()
  }
  exports.default = tsTask
- ````
+````
 
 - 对于 Babel，重命名为 `gulpfile.babel.js` 并安装 [@babel/register](https://www.npmjs.com/package/@babel/register)   [@babel/preset-env](https://www.npmjs.com/package/@babel/preset-env) 模块
 
@@ -134,15 +140,13 @@ export { clean }
 }
 ````
 
-
-
 **Gulpfile 分割**
 
-大部分用户起初是将所有业务逻辑都写到一个 gulpfile 文件中。随着文件的变大，可以将此文件重构为数个独立的文件。
+一般是将所有业务逻辑都写到一个 gulpfile 文件中，随着文件的变大，可以将此文件重构为数个独立的文件。
 
-每个任务（task）可以被分割为独立的文件，然后导入（import）到 gulpfile 文件中并组合。这不仅使事情变得井然有序，而且可以对每个任务（task）进行单独测试，或者根据条件改变组合。
+每个任务（task）可以被分割为独立的文件，然后导入（import）到 gulpfile 文件中并组合
 
-Node 的模块解析功能允许你将 `gulpfile.js`文件替换为同样命名为 `gulpfile.js` 的目录，该目录中包含了一个名为 `index.js` 的文件，该文件被当作 `gulpfile.js` 使用。且该目录中还可以包含各个独立的任务（task）模块。
+Node 的模块解析功能允许你将 `gulpfile.js`文件替换为同样命名为 `gulpfile.js` 的目录，该目录中包含了一个名为 `index.js` 的文件，该文件被当作 `gulpfile.js` 使用
 
 ````
 ├─gulpfile.js
@@ -166,26 +170,24 @@ Node 的模块解析功能允许你将 `gulpfile.js`文件替换为同样命名�
 **创建方式**
 
 ````javascript
-//方法一
+//方法一 gulp4
 const task1 = cb => {
   cb()
 }
 //exports.[任务名称]
 exports.task = task1
 
-//方法二 不推荐
+//方法二 gulp4之前注册任务的方法
 const task2 = cb => {
   cb()
 }
 task(task2)
 
-//方法三 不推荐
+//方法三 gulp4之前注册任务的方法
 task('task3', cb => {
   cb()
 })
 ````
-
-
 
 **任务函数类型**
 
@@ -200,11 +202,9 @@ task('task3', cb => {
    }
    ````
 
-2. 返回值为stream、promise、event emitter、child process或observable类型 *TODO
+2. 返回值为stream（常用）
 
-
-
-
+3. 返回值为promise、event emitter、child process或observable类型 
 
 **公开/私有任务**
 
@@ -213,17 +213,15 @@ task('task3', cb => {
 
 
 
+### 3.2 Vinyl File Object 
 
+Gulp是基于**流**的构建工具。Gulp使用的是**Stream**，但却不是普通的Node Stream
 
-http://acgtofe.com/posts/2015/09/dive-into-gulp-stream
+> **Stream** 是node的内置模块，主要有**Readable**（只读流）、**Writable**（只写流）、**Duplex**（双向流）、**Transform**（转换）四种流类型。Stream主要提供一个pipe()方法，该方法接收一个转换流或可写流， 且返回目标流。因此可以链式调用 `a.pipe(b).pipe(c).pipe(d)` 
 
-### 3.2 Vinyl File Object
+实际上，Gulp（以及Gulp插件）用的应该叫做Vinyl File Object Stream。**Vinyl**是一个文件的描述对象，**Vinyl主要用两个属性来描述文件，它们分别是路径（path）及内容（contents）**。是文件的抽象表现，可以用之表述为任何形式的文件对象，如操作系统文件、网络文件等等。
 
-**Vinyl**可以看做一个文件描述器，通过它可以轻松构建单个文件的元数据（metadata object）描述对象
-
-对
-
-**基本使用**
+**Vinyl基本使用**
 
 ````javascript
 const Vinyl = require('vinyl') //引入vinyl
@@ -241,16 +239,28 @@ Gulp为什么不使用普通的Node Stream呢？请看这段代码：
 
 ```javascript
 gulp.task("css", function(){
-    gulp.src("./stylesheets/src/**/*.css")
-        .pipe(gulp.dest("./stylesheets/dest"));
+    gulp.src("./src/**/*.css")
+        .pipe(gulp.dest("./dest"));
 });
 ```
 
-虽然这段代码没有用到任何Gulp插件，但包含了我们最为熟悉的`gulp.src()`和`gulp.dest()`。这段代码是有效果的，就是将一个目录下的全部`.css`文件，都复制到了另一个目录。这其中还有一个很重要的特性，那就是所有原目录下的文件树，包含子目录、文件名等，都原封不动地保留了下来。
+这段代码是将一个目录下的`.css`文件，都复制到了另一个目录。这其中还有一个很重要的特性，那就是所有原目录下的文件树，包含子目录、文件名等，都原封不动地保留了下来。普通的Node Stream只传输String或Buffer类型，也就是只关注“内容”。但Gulp不只用到了文件的内容，而且还用到了这个文件的相关信息
 
-普通的Node Stream只传输String或Buffer类型，也就是只关注“内容”。但Gulp不只用到了文件的内容，而且还用到了这个文件的相关信息（比如路径）
+**类型**
 
+Vinyl File Object的**contents可以有三种类型**：**Stream**、**Buffer**（二进制数据）、**Null**（就是JavaScript里的`null`）。需要注意的是，**各类Gulp插件虽然操作的都是Vinyl File Object，但可能会要求不同的类型**。
 
+在使用Gulp过程中，可能会碰到incompatible streams的问题，像这样：
+
+![incompatible streams](https://s2.loli.net/2022/08/19/5aLWwdinfDmr3Xs.png)
+
+这个问题的原因一般都是Stream与Buffer的类型差异。Stream特性是可以把数据分成小块，一段一段地传输，而Buffer则是整个文件作为一个整体传输。可以想到，不同的Gulp插件做的事情不同，因此可能不支持某一种类型。例如，`gulp-uglify`这种需要对JavaScript代码做语法分析的，就必须保证代码的完整性，因此，`gulp-uglify`只支持Buffer类型的Vinyl File Object。
+
+`gulp.src()`方法默认会返回Buffer类型，如果想要Stream类型，可以这样指明：
+
+```arduino
+gulp.src("*.js", {buffer: false})
+```
 
 **vinyl-fs**
 
@@ -270,56 +280,34 @@ Gulp.prototype.dest = vfs.dest;
 
 
 
-**类型**
-
-Vinyl File Object的**contents可以有三种类型**：**Stream**、**Buffer**（二进制数据）、**Null**（就是JavaScript里的`null`）。需要注意的是，**各类Gulp插件虽然操作的都是Vinyl File Object，但可能会要求不同的类型**。
-
-在使用Gulp过程中，可能会碰到incompatible streams的问题，像这样：
-
-![incompatible streams](https://segmentfault.com/img/bVpYZT)
-
-这个问题的原因一般都是Stream与Buffer的类型差异。Stream如前文介绍，特性是可以把数据分成小块，一段一段地传输，而Buffer则是整个文件作为一个整体传输。可以想到，不同的Gulp插件做的事情不同，因此可能不支持某一种类型。例如，`gulp-uglify`这种需要对JavaScript代码做语法分析的，就必须保证代码的完整性，因此，`gulp-uglify`只支持Buffer类型的Vinyl File Object。
-
-`gulp.src()`方法默认会返回Buffer类型，如果想要Stream类型，可以这样指明：
-
-```arduino
-gulp.src("*.js", {buffer: false})
-```
-
-
-
 ### 3.3 Glob
 
 glob 是由普通字符和/或通配字符组成的字符串，用于匹配文件路径。可以利用一个或多个 glob 在文件系统中定位文件
 
-1、* ，对于匹配单级目录下的文件很有用。
-2、* * ，对于匹配嵌套目录下的文件很有用。
-3、! 反取，glob 数组中的取反必须跟在一个非取反的后面
+**匹配规则**
+
+1.  `*` ，在一个字符串中，匹配任意数量的字符，包括0个匹配
+
+2. `**`，在多个字符串匹配中匹配任意数量的字符串，通常用在匹配目录下的文件
+3. `!`，反取，glob 数组中的取反必须跟在一个非取反的后面
 
 ```javascript
 gulp.src('./js/*.js')                           // * 匹配js文件夹下所有.js格式的文件
 gulp.src('./js/**/*.js')                        // ** 匹配js文件夹的0个或多个子文件夹
 gulp.src(['./js/*.js','!./js/index.js'])        // ! 匹配除了index.js之外的所有js文件
-gulp.src('./js/**/{omui,common}.js')            // {} 匹配{}里的文件名
 ```
 
 [参考资料]: https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/
 
 
 
-
-
-
-
-
-
-
-
-
-
 ## 4 API
 
 ### 4.1 src()
+
+> src方法根据所传入的globs，从文件系统匹配到对应文件并读取，然后生成一个Stream，它将所有匹配的文件读取到内 
+>
+> 存中并通过流（Stream）进行处理； 
 
 **定义**
 
@@ -330,6 +318,8 @@ gulp.src('./js/**/{omui,common}.js')            // {} 匹配{}里的文件名
 1.`globs`
 
 类型：string array
+
+说明:  文件路径或使用 [node-glob](https://github.com/isaacs/node-glob)  语法来匹配文件
 
 2.`options`
 
@@ -357,6 +347,8 @@ exports.copy = copy
 
 ### 4.2 dest()
 
+> 接受一个输出目录作为参数，并且它还会产生一个 Node流(stream)，通过该流将内容输出到文件中
+
 **定义**
 
 `dest(directory, [options])`
@@ -380,21 +372,11 @@ exports.copy = copy
 - sourcemaps
 - 其余参数请参考 https://www.gulpjs.com.cn/docs/api/dest/#%E9%80%89%E9%A1%B9
 
-### 4.3 symlink()
+### 4.3 task()
 
-软链接
-
-fs.symlink https://nodejs.org/api/fs.html#fssymlinktarget-path-type-callback
-
-https://baijiahao.baidu.com/s?id=1711929846570027467&wfr=spider&for=pc
-
-### 4.4 task()
-
-**提示**: 官方不再推荐使用该API
+> 用于注册、查询gulp任务
 
 `task([taskName], taskFunction)`
-
-可用于注册、查询任务
 
 **参数说明** [#](https://www.gulpjs.com.cn/docs/api/task/#parameters)
 
@@ -419,52 +401,37 @@ https://baijiahao.baidu.com/s?id=1711929846570027467&wfr=spider&for=pc
 | description | string | 任务描述信息                                                 |
 |    flags    | object | When attached to a `taskFunction` provides flags to be printed by the command line when listing tasks. The keys of the object represent the flags and the values are their descriptions. |
 
+### 4.4 series()
 
-
-
-
-### 4.5 series()
+> 串行任务组合，如果一个任务中发生错误，则不会运行后续任务
 
 **定义**
 
 `series(...tasks)` 
 
-所有任务将按顺序运行。如果一个任务中发生错误，则不会运行后续任务
-
-
-
 **参数说明** [#](https://www.gulpjs.com.cn/docs/api/series/#%E5%8F%82%E6%95%B0)
 
 1.`tasks`
 
 类型：string function
 
-说明：任意数量的任务函数都可以作为单独的参数传递。如果您以前注册过任务，可以使用字符串，但不建议这样做
+说明：任意数量的任务函数都可以作为单独的参数传递
 
+### 4.5 parallel()
 
-
-
-
-### 4.6 parallel()
+> 所有任务将按最大并发性运行
 
 **定义**
 
 `parallel(...tasks)` 
 
-所有任务将按最大并发性运行。如果一个任务发生错误，其他任务可能不确定地完成，也可能不完成。
-
-
-
 **参数说明** [#](https://www.gulpjs.com.cn/docs/api/series/#%E5%8F%82%E6%95%B0)
 
 1.`tasks`
 
 类型：string function
 
-说明：任意数量的任务函数都可以作为单独的参数传递。如果您以前注册过任务，可以使用字符串，但不建议这样做
-**避免重复任务**
-
-当运行组合操作时，每个任务将在每次提供时执行。
+说明：任意数量的任务函数都可以作为单独的参数传递，当运行组合操作时，每个任务将在每次提供时执行。
 
 在两个不同的组合中引用的 `clean` 任务将运行两次，将导致不期望的结果。因此，建议在最终组合中指定 `clean` 任务。
 
@@ -497,31 +464,104 @@ exports.build = series(clean, parallel(css, javascript))
 ```
 
 
-### 4.7 watch()
+### 4.6 watch()
 
+> 用于监听文件改变、新增、删除
 
+**定义**
 
+`watch(globs, [options], [task])` 
 
+**参数说明** [#](https://www.gulpjs.com.cn/docs/api/watch/#%E5%8F%82%E6%95%B0)
 
+**返回值**
 
+返回一个**chokidar **实例，用于对监听设置进行细粒度控制。
 
+**示例**
 
+````javascript
+exports.default = () => {
+  return watch(['src/**/*'], function (cb) {
+    console.log(`run watch task`)
+    cb()
+  })
+}
+````
+
+**Chokidar实例** [#](https://www.gulpjs.com.cn/docs/api/watch/#chokidar-%E5%AE%9E%E4%BE%8B)
+
+`watch()` 方法返回 [chokidar](https://github.com/paulmillr/chokidar) 的底层实例，提供对监听设置的细粒度控制。最常用来注册提供更改文件的 `path` 或 `stats` 的单个事件处理程序
+
+````javascript
+const { watch } = require('gulp')
+
+const watcher = watch(['src/**/*'])
+
+watcher.on('change', function (path, stats) {
+  console.log(`File ${path} was changed`)
+  watcher.close()
+})
+
+watcher.on('add', function (path, stats) {
+  console.log(`File ${path} was added`)
+})
+
+watcher.on('unlink', function (path, stats) {
+  console.log(`File ${path} was removed`)
+})
+
+````
 
 
 
 ## 5 Plugin
 
-### https://gulpjs.com/plugins
+> Gulp的每个插件只完成一个功能，这也是Unix的设计原则之一，各个功能通过流进行整合并完成复杂的任务。
+>
+> 官方插件库 https://gulpjs.com/plugins
+
+### 5.1 常用Gulp 插件
+
+#### gulp-babel
+
+> es6+转es5
+
+#### gulp-imagemin 
+
+> 压缩图片
+
+#### gulp-less
+
+> 将less文件转为css
+
+#### gulp-htmlmin 
+
+> html压缩
+
+#### gulp-terser 
+
+> 混淆js文件
+
+#### gulp-sourcemaps
+
+> 生成sourcemap
+
+#### gulp-inject
+
+> html资源注入
 
 
 
+### 5.2 常用node库
 
+#### browser-sync
 
-### browser-sync
+> 是浏览器同步测试工具，能让浏览器实时、快速响应文件更改（html、js、css、sass、less等）并自动刷新页面
+>
+> https://browsersync.io/
 
-`npm i browser-sync -D`
-
-https://www.dandelioncloud.cn/article/details/1451841139929321473
+**安装** `npm i browser-sync -D`
 
 **与gulp结合使用**
 
@@ -541,15 +581,19 @@ const serve = () => {
 
 **代理模式**
 
-localhost:8081为本地vue项目的地址
+localhost:8081为本地已有的web服务地址
 
 ````sh
 browser-sync start --proxy "localhost:8081" "*"
 ````
 
+#### yargs 
 
+> 处理[命令行](https://so.csdn.net/so/search?q=命令行&spm=1001.2101.3001.7020)参数。https://yargs.js.org/
 
-### 
+#### del
+
+> 删除指定目录下所有文件。https://github.com/sindresorhus/del
 
 
 
@@ -652,93 +696,11 @@ module.exports = {
 
 
 
-## 7 源码
-
-undertaker
-
-https://www.lmlphp.com/user/58030/article/item/1242907/
-
-````javascript
-var Undertaker = require('undertaker');
-
-function Gulp() {
-  Undertaker.call(this);
-
-  // Bind the functions for destructuring
-  this.watch = this.watch.bind(this);
-  this.task = this.task.bind(this);
-  this.series = this.series.bind(this);
-  this.parallel = this.parallel.bind(this);
-  this.registry = this.registry.bind(this);
-  this.tree = this.tree.bind(this);
-  this.lastRun = this.lastRun.bind(this);
-  this.src = this.src.bind(this);
-  this.dest = this.dest.bind(this);
-  this.symlink = this.symlink.bind(this);
-}
-````
-
-
-
-vinyl-fs
-
-
-
-
-
-http://www.zhishichong.com/article/100343
-
-
-
-https://gitee.com/M-J/gulp-angular1/tree/master
-
-https://blog.csdn.net/weixin_42524603/article/details/123644192
-
-https://www.jianshu.com/p/fcc97f0fa535
-
-
-
-
-
-
-
-## 补充
-
-### Stream
-
-`pipe`
-
-pipe方法将数据侦听绑定到streams流的源头，然后将接收到的数据导流到目标streams中
-
-https://zhuanlan.zhihu.com/p/477325197
-
-### RxJS 
-
-https://zhuanlan.zhihu.com/p/483747825
-
-
-
-源码
-
-http://www.zhishichong.com/article/100343
-
-
-
-esbuild
-
-
-
-Project
-
-https://github.com/cognitom/symbols-for-sketch
-
-
-
-
-
-## 相关链接
+## 7 相关链接
 
 - 官方文档 https://gulpjs.com/
 - 中文文档 https://www.gulpjs.com.cn/
+- Gulp插件库 https://gulpjs.com/plugins
+- Gulp技巧集合 https://v3.gulpjs.com.cn/docs/recipes/
+- Gulp学习资料集合 https://github.com/Platform-CUF/use-gulp
 - Gulp4 工作流配置示例 https://github.com/zhonglimh/Ublue-gulp-config
-
